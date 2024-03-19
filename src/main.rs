@@ -159,7 +159,7 @@ fn main() {
                     gl::ClearColor(1.0, 0.0, 0.0, 1.0);
                     gl::Clear(gl::COLOR_BUFFER_BIT);
                     gl::Clear(gl::DEPTH_BUFFER_BIT);
-                    gl::BindTexture(gl::TEXTURE_3D, texture);
+                    // gl::BindTexture(gl::TEXTURE_3D, texture);
 
                     // Use shader program
                     gl::UseProgram(program);
@@ -262,13 +262,14 @@ fn set_uniform_values(program: GLuint, window: &window::Window) {
     // let time_sin = time.sin().abs() as f32;
     // println!("Time: {}", time_sin);
 
-    let mut projection_matrix =
-        nalgebra_glm::perspective(fov_radians, m_aspect_ratio, 0.1, 100.0);
+    let mut projection_matrix = nalgebra_glm::perspective(fov_radians, m_aspect_ratio, 0.1, 100.0);
     set_uniform_value(program, "projection", projection_matrix);
     let mut model_matrix = Matrix4::identity();
+    model_matrix = model_matrix.append_translation(&Vector3::new(0.0, 0.0, 2.0));
+    model_matrix = nalgebra_glm::rotate(&model_matrix, 45.0_f32.to_radians(), &Vector3::new(0.0, 1.0, 0.0));
     set_uniform_value(program, "model", model_matrix);
     let mut view_matrix = Matrix4::identity();
-    let eye = Vector3::new(0.0, 0.0, 2.0);
+    let eye = Vector3::new(0.0, 0.0, -2.0);
     let center = Vector3::new(0.0, 0.0, 0.0);
     let up = Vector3::new(0.0, 1.0, 0.0);
     view_matrix = nalgebra_glm::look_at(&eye, &center, &up);
