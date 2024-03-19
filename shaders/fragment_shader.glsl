@@ -1,45 +1,12 @@
-#version 330
-uniform mat4 ViewMatrix;
-uniform mat3 NormalMatrix;
+#version 330 core
 
-uniform float focal_length;
-uniform float aspect_ratio;
-uniform vec2 viewport_size;
-uniform vec3 ray_origin;
-uniform vec3 top;
-uniform vec3 bottom;
-
-uniform vec3 background_colour;
-uniform vec3 material_colour;
-uniform vec3 light_position;
-
-uniform float step_length;
-uniform float threshold;
-
-uniform sampler3D volume;
-uniform sampler2D jitter;
-
-uniform float gamma;
-
-// Ray
-struct Ray {
-    vec3 origin;
-    vec3 direction;
-};
-
-// Axis-aligned bounding box
-struct AABB {
-    vec3 top;
-    vec3 bottom;
-};
-
-out vec4 out_color;
-
-in vec3 TexCoord;
-in vec3 ourColor;
-
-uniform sampler3D texture1;
+out vec4 FragColor;
 
 void main() {
-    out_color = texture(texture1, TexCoord);
+    // Normalize screen coordinates to range from 0 to 1
+    float x = gl_FragCoord.x / 800.0; // Assuming a window width of 800 pixels
+    float y = gl_FragCoord.y / 600.0; // Assuming a window height of 600 pixels
+    
+    // Use x and y coordinates to generate a color
+    FragColor = vec4(x, y, 0.5, 1.0); // Combines x and y for red and green, constant blue, full alpha
 }

@@ -40,8 +40,10 @@ fn main() {
     // Load the OpenGL function pointers
     gl::load_with(|symbol| gl_window.get_proc_address(symbol));
 
-    let shaders =
-        shader::Shader::load_from_file("shaders/vertex_shader.glsl", "shaders/mip_shader.glsl");
+    let shaders = shader::Shader::load_from_file(
+        "shaders/vertex_shader.glsl",
+        "shaders/fragment_shader.glsl",
+    );
 
     // Create GLSL shaders
     let vs = shader::Shader::compile_shader(shaders.get_vertex(), gl::VERTEX_SHADER);
@@ -156,6 +158,7 @@ fn main() {
                     // Clear the screen to black
                     gl::ClearColor(1.0, 0.0, 0.0, 1.0);
                     gl::Clear(gl::COLOR_BUFFER_BIT);
+                    gl::Clear(gl::DEPTH_BUFFER_BIT);
                     gl::BindTexture(gl::TEXTURE_3D, texture);
 
                     // Use shader program
@@ -247,33 +250,33 @@ fn set_uniform_value<T: Uniform>(program: GLuint, name: &str, value: T) {
 }
 
 fn set_uniform_values(program: GLuint, window: &window::Window) {
-    let m_fov: f32 = 60.0;
+    let m_fov: f32 = 45.0;
     let fov_radians = m_fov.to_radians();
     let m_aspect_ratio = window.inner_size().width as f32 / window.inner_size().height as f32;
-    let scale_factor: f64 = 0.1;
-    let time = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap()
-        .as_secs_f64()
-        * scale_factor;
-    let time_sin = time.sin().abs() as f32;
+    // let scale_factor: f64 = 0.1;
+    // let time = std::time::SystemTime::now()
+    //     .duration_since(std::time::UNIX_EPOCH)
+    //     .unwrap()
+    //     .as_secs_f64()
+    //     * scale_factor;
+    // let time_sin = time.sin().abs() as f32;
+    // println!("Time: {}", time_sin);
 
-    let mut m_model_view_projection_matrix =
-        nalgebra_glm::perspective(fov_radians, m_aspect_ratio, 0.0, 100.0);
+    let mut projection_matrix =
+        nalgebra_glm::perspective(fov_radians, m_aspect_ratio, 0.1, 100.0);
+    set_uniform_value(program, "projection", projection_matrix);
+    let mut model_matrix = Matrix4::identity();
+    set_uniform_value(program, "model", model_matrix);
+    let mut view_matrix = Matrix4::identity();
+    let eye = Vector3::new(0.0, 0.0, 2.0);
+    let center = Vector3::new(0.0, 0.0, 0.0);
+    let up = Vector3::new(0.0, 1.0, 0.0);
+    view_matrix = nalgebra_glm::look_at(&eye, &center, &up);
+    set_uniform_value(program, "view", view_matrix);
 
-    m_model_view_projection_matrix = nalgebra_glm::translate(
-        &m_model_view_projection_matrix,
-        &Vector3::new(0.0, 0.0, 0.9),
-    );
-    println!("Time: {}", time_sin);
-    set_uniform_value(
-        program,
-        "m_model_view_projection_matrix",
-        m_model_view_projection_matrix,
-    );
-    let viewport_size = Vector2::new(
-        window.inner_size().width as f32,
-        window.inner_size().height as f32,
-    );
-    set_uniform_value(program, "viewport_size", viewport_size);
+    // let viewport_size = Vector2::new(
+    //     window.inner_size().width as f32,
+    //     window.inner_size().height as f32,
+    // );
+    // set_uniform_value(program, "viewport_size", viewport_size);
 }
