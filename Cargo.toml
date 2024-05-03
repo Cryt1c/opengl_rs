@@ -18,5 +18,6 @@ image = "0.24.9"
 nalgebra = "0.32.4"
 nalgebra-glm = "0.18.0"
 raw-window-handle = "0.5.0"
+three-d = "0.17.0"
 three-d-asset = { version = "0.7.0", features = ["vol"] }
 winit = "0.29.15"

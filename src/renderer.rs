@@ -1,10 +1,10 @@
 use crate::volume::Volume;
-use crate::{shader::Shader, uniform::set_uniform_value};
+use crate::shader::Shader;
 use glow::{HasContext, NativeBuffer, NativeTexture, NativeVertexArray};
 use nalgebra::{Matrix4, Vector3};
 use std::{mem, sync::Arc};
 
-pub struct Renderer {
+pub struct GlowRenderer {
     start_time: std::time::Instant,
     frame_count: u32,
     pub gl_glow: Arc<glow::Context>,
@@ -18,14 +18,14 @@ pub struct Renderer {
     pub camera_z: f32,
 }
 
-impl Renderer {
+impl GlowRenderer {
     pub fn new(creation_context: &eframe::CreationContext<'_>) -> Self {
         let gl = creation_context
             .gl
             .as_ref()
             .expect("You need to run eframe with the glow backend");
 
-        let mut renderer = Renderer {
+        let mut renderer = GlowRenderer {
             gl_glow: gl.clone(),
             vao: None,
             vbo: None,
@@ -129,7 +129,7 @@ impl Renderer {
     }
 }
 
-impl eframe::App for Renderer {
+impl eframe::App for GlowRenderer {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| {
