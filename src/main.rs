@@ -1,8 +1,8 @@
-use three_d::{Context, FrameOutput, Window, WindowSettings};
+use three_d::{ClearState, Context, FrameOutput, Window, WindowSettings};
 
-mod renderer;
+mod glow_renderer;
 mod shader;
-mod threerenderer;
+mod threed_renderer;
 mod uniform;
 mod volume;
 
@@ -16,24 +16,28 @@ fn main() {
     // let _ = eframe::run_native(
     //     "Raycaster",
     //     options,
-    //     Box::new(|cc| Box::new(renderer::Renderer::new(cc))),
+    //     Box::new(|cc| Box::new(glow_renderer::GlowRenderer::new(cc))),
     // );
 
     let window = Window::new(WindowSettings {
-        title: "Core Triangle!".to_string(),
-        #[cfg(not(target_arch = "wasm32"))]
+        title: "Volume!".to_string(),
         max_size: Some((1280, 720)),
         ..Default::default()
     })
     .unwrap();
 
     let context: Context = window.gl();
-    let width = window.size().0 as f32;
-    let height = window.size().1 as f32;
+    println!("{:?}", window.viewport());
+    // context.set_viewport(window.viewport());
+    let width = window.viewport().width as f32;
+    let height = window.viewport().height as f32;
 
-    let mut renderer = threerenderer::ThreeRenderer::new(context, width, height);
+    let mut renderer = threed_renderer::ThreeRenderer::new(context, width, height);
 
     window.render_loop(move |frame_input| {
+        frame_input
+            .screen()
+            .clear(ClearState::color_and_depth(0.5, 0.5, 0.5, 1.0, 1.0));
         renderer.update();
         FrameOutput::default()
     });
