@@ -170,6 +170,7 @@ impl ThreeRenderer {
             Shader::set_uniform_value(&self.gl, program, "V", view_matrix);
             Shader::set_uniform_value(&self.gl, program, "P", projection_matrix);
 
+            self.gl.enable(glow::DEPTH_TEST);
             self.gl.bind_vertex_array(vao);
             self.gl.draw_elements(
                 glow::TRIANGLES,

@@ -28,16 +28,15 @@ fn main() {
 
     let context: Context = window.gl();
     println!("{:?}", window.viewport());
-    // context.set_viewport(window.viewport());
     let width = window.viewport().width as f32;
     let height = window.viewport().height as f32;
 
-    let mut renderer = threed_renderer::ThreeRenderer::new(context, width, height);
+    let renderer = threed_renderer::ThreeRenderer::new(context, width, height);
 
     window.render_loop(move |frame_input| {
         frame_input
             .screen()
-            .clear(ClearState::color_and_depth(0.5, 0.5, 0.5, 1.0, 1.0));
+            .clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0));
         renderer.update();
         FrameOutput::default()
     });
