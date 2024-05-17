@@ -16,3 +16,21 @@ fn main() {
         Box::new(|cc| Box::new(renderer::Renderer::new(cc))),
     );
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_hounsfield_normalization() {
+        let input: Vec<u16> = vec![4095, 0, 2047];
+        let expected: Vec<u8> = vec![255, 0, 127];
+        let result: Vec<u8> = input
+            .iter()
+            .map(|&x| volume::Volume::normalize_hounsfield_units(x))
+            .collect();
+        println!("{:?}", result);
+
+        assert_eq!(expected, result);
+    }
+}
